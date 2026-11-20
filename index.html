@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HAR KUBIKEL 20 KV</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#f4f7fa;--c:#fff;--t:#14202b;--m:#5b6b7a;--l:#d5dde5;--a:#0d5b71;--a2:#1b9ad6;--r:#e62a2b;--stk:120px;color-scheme:light}
+[hidden]{display:none!important}*{box-sizing:border-box}html{overflow-anchor:none}
+body{margin:0;font:14px/1.4 system-ui,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--t);padding-bottom:84px}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;background:var(--c);border-bottom:3px solid var(--a2)}
+header img{height:46px}h1{font-size:19px;margin:0;color:var(--a)}header small{color:var(--m)}header button{margin-left:auto}
+#stick{position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 14px 0;transition:box-shadow .25s}#stick.stuck{box-shadow:0 6px 16px rgba(13,91,113,.18)}
+.wrap,main{max-width:1200px;margin:auto}main{padding:6px 14px 14px}
+.card{background:var(--c);border:1px solid var(--l);border-radius:10px;padding:12px;margin-bottom:10px}
+.cs{display:flex;align-items:center;gap:12px;flex-wrap:wrap;transition:padding .25s}.cs b{color:var(--a)}#comp{flex:1;min-width:220px;font-size:15px;font-weight:600;padding:9px}#stick.stuck .cs{padding:6px 12px}
+h2{margin:0 0 8px;font-size:15px;color:var(--a)}h3{margin:16px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--m)}
+label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--m)}.rq{color:var(--r)}
+input,select,textarea{font:inherit;color:var(--t);background:#fff;border:1px solid var(--l);border-radius:6px;padding:6px 8px;width:100%}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--a2)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+#insp{padding:10px 12px}#sum{display:none;align-items:center;gap:10px;cursor:pointer;font-size:13px}#sum em{margin-left:auto;font-style:normal;color:var(--a2);font-weight:600}#sumt{color:var(--m)}
+#stick.mini #sum{display:flex}#stick.mini .ih{display:none}
+.insp-body{max-height:700px;opacity:1;overflow:hidden;transition:max-height .35s ease,opacity .25s ease}
+#stick.mini:not(.open) .insp-body{max-height:0;opacity:0}#stick.mini.open .insp-body{max-height:55vh;overflow:auto;margin-top:8px}
+.ig{display:grid;grid-template-columns:repeat(3,1fr);gap:5px 24px}.hf{display:contents}.col{display:flex;flex-direction:column;gap:5px}
+.fr{display:grid;grid-template-columns:128px 1fr;align-items:center;gap:6px;color:var(--t);font-size:13px}.fr input{padding:5px 8px}#pvs{display:block;margin-top:6px;color:var(--m)}
+details.sec{padding:0}details.sec>summary{display:flex;align-items:center;gap:8px;padding:12px;cursor:pointer;font-weight:700;color:var(--a);list-style:none}
+details.sec>summary::-webkit-details-marker{display:none}details.sec>summary::before{content:"▾";transition:transform .2s}details.sec:not([open])>summary::before{transform:rotate(-90deg)}
+.ex{margin-left:auto;display:flex;gap:6px}.exb{padding:4px 10px;font-size:12px}.sb{padding:0 12px 12px}
+.gh2{display:flex;align-items:center;gap:8px;padding:9px 8px;margin-top:8px;background:#eaf2f7;border-radius:8px;font-weight:600;cursor:pointer;user-select:none}
+.gh2 .ar{transition:transform .2s}.gh2.cl .ar{transform:rotate(-90deg)}.gb.cl{display:none}
+.cnt{margin-left:auto;font-size:11px;background:#fff;border:1px solid var(--l);border-radius:10px;padding:1px 8px;color:var(--m)}.cnt.full{background:#e6f6ec;color:#1a7f45;border-color:#9fd8b5}
+.ckh,.ckr{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center;padding:6px 8px}
+.ckh,.uh{position:sticky;top:var(--stk);z-index:10;background:#dcebf4;font-size:12px;font-weight:600;border-bottom:2px solid var(--a2);margin-top:6px;transition:top .2s}
+.ckr{border-bottom:1px solid var(--l)}.nm{font-size:13px}.pls{display:flex;gap:6px}
+.pill{flex:1;position:relative}.pill input{position:absolute;opacity:0;width:0;height:0}
+.pill span{display:flex;align-items:center;justify-content:center;min-height:38px;padding:4px 6px;border:1px solid var(--l);border-radius:8px;background:#fff;color:var(--t);font-size:12px;text-align:center;cursor:pointer;transition:background .15s,color .15s}
+.pill input:checked+span{background:var(--a2);border-color:var(--a2);color:#fff;font-weight:600}.pill.bd input:checked+span{background:var(--r);border-color:var(--r)}
+.uh,.ur{display:grid;grid-template-columns:minmax(150px,1.3fr) minmax(0,1.15fr) minmax(0,1.15fr) minmax(0,.9fr) minmax(0,1.15fr) minmax(0,1.1fr);gap:8px;align-items:start;padding:6px 8px}
+.uh{text-align:center}.ur{border-bottom:1px solid var(--l)}.un{font-size:13px}.un small{display:block;color:var(--m)}
+.b{display:flex;flex-wrap:wrap;gap:4px}.b input{flex:1 1 0;min-width:0;padding:6px 3px;text-align:center}.bl{display:none;width:100%;font-size:11px;color:var(--m)}
+.pv input{background:#f4f6f8}input.auto{background:#fff7d6}pre.acu{margin:6px 0 2px;white-space:pre-wrap;font:11px/1.3 inherit;font-family:inherit;color:var(--m)}
+.sc{overflow-x:auto}table.uj2{border-collapse:collapse;width:100%;font-size:12px;margin-bottom:8px}.uj2 th,.uj2 td{border:1px solid var(--l);padding:3px 4px;text-align:center}.uj2 td.l{text-align:left}.uj2 th{background:#f0f5f8}.uj2 caption{text-align:left;font-weight:600;padding:4px 0}.uj2 input{min-width:56px;padding:4px}
+.cv{font-weight:600;color:var(--a)}.bad{outline:2px solid var(--r);outline-offset:-2px;background:rgba(230,42,43,.08)}
+@media(max-width:760px){.ig{grid-template-columns:1fr}.uh{display:none}.ur{grid-template-columns:1fr 1fr}.un,.ur .tn,.ur .ks{grid-column:1/-1}.bl{display:block}.ckh,.ckr{grid-template-columns:1fr 1fr}.ckh>:first-child{display:none}.ckr .nm{grid-column:1/-1}.fr{grid-template-columns:110px 1fr}}
+@media(max-width:760px){header{padding:8px 10px;gap:8px}header small{display:none}header img{height:34px}header h1{font-size:16px}header button{padding:6px 8px;font-size:12px}}
+.pl{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:8px}.ph{border:1px solid var(--l);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;background:#fff}.ph img{width:100%;height:140px;object-fit:cover;border-radius:6px}
+.rd{flex-direction:row;display:inline-flex;gap:4px;align-items:center;color:var(--t);font-size:12px}.rd input{width:auto}
+.btn,button{font:inherit;cursor:pointer;border:1px solid var(--a);color:var(--a);background:#fff;padding:8px 14px;border-radius:8px;display:inline-flex;flex-direction:row;align-items:center;gap:6px}
+.btn.up{background:var(--a2);border-color:var(--a2);color:#fff;font-size:13px}button.p{background:var(--a2);border-color:var(--a2);color:#fff}
+button:disabled{opacity:.4;cursor:not-allowed}.cw{position:relative;flex:1;min-width:220px}#cov{position:absolute;inset:0;cursor:pointer;z-index:2}#bh{color:var(--m);align-self:center;font-size:12px;width:100%;text-align:center}
+.bar{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:10px;background:var(--c);border-top:1px solid var(--l);z-index:25}
+#toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:8px;display:none;max-width:90vw;z-index:30}
+dialog{border:1px solid var(--l);border-radius:10px;max-width:520px;width:92vw}dialog div{display:flex;gap:8px;margin-top:12px}
+#pv{overflow-x:auto}.pg{background:#fff;color:#000;margin:0 auto 14px}.pg table{border-collapse:collapse;table-layout:fixed;font:11px Arial,sans-serif}
+.pg td{border:1px solid #000;padding:3px 4px;text-align:center;vertical-align:middle;white-space:pre-wrap;word-break:break-word}
+.pg td.l{text-align:left}.pg .b{font-weight:700}.pg .bg{background:#e8eef3}.pg img.pi{width:100%;display:block}#off{position:fixed;left:-99999px;top:0}
+</style></head><body>
+<header><img id="lg" alt="PLN"><div><h1>HAR KUBIKEL 20 KV</h1><small>Checklist &amp; Hasil Uji Pemeliharaan Kubikel — UP2D Suluttenggo</small></div><button id="cfg" type="button">⚙ Koneksi Google</button></header>
+<div id="stick"><div class="wrap">
+<div class="card cs"><b>Komponen yang Diperiksa</b><div class="cw"><select id="comp"></select><div id="cov" hidden></div></div></div>
+<div class="card" id="insp" hidden></div>
+</div></div>
+<main>
+<div id="panels"></div>
+<section class="card" id="more" hidden><h2>Pelaksana &amp; Pengesahan</h2><div class="g" id="mg"></div></section>
+<section class="card" id="prevc" hidden><h2>Pratinjau Format Export</h2><div id="pv"></div></section>
+</main>
+<div class="bar"><button class="p" data-a="s">Simpan Data</button><button data-a="x">⬇ Export Excel</button><button data-a="p">⬇ Export PDF</button><button data-a="v">Pratinjau</button><small id="bh"></small></div>
+<div id="toast"></div><div id="off"></div>
+<dialog id="warn"><h2>Data belum disimpan</h2><p style="margin:0;color:var(--m)">Perubahan pada komponen ini belum disimpan. Jika Anda berpindah komponen sekarang, data ini belum masuk ke Google dan belum bisa diexport.</p><div><button class="p" id="wsv" type="button">Simpan Data</button><button id="wgo" type="button">Lanjut tanpa simpan</button><button id="wcn" type="button">Batal</button></div></dialog>
+<dialog id="dlg"><h2>Koneksi Google</h2><p style="margin:0 0 8px;color:var(--m)">Tempel URL Web App Apps Script (berakhiran <code>/exec</code>) dari Code.gs.</p><input id="api" placeholder="https://script.google.com/macros/s/.../exec"><div><button class="p" id="sv" type="button">Simpan</button><button id="ts" type="button">Tes koneksi</button><button id="cl" type="button">Tutup</button></div></dialog>
+<script>
+const LOGO='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQ0IiBoZWlnaHQ9IjEwMi4yNCIgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDM0NCAxMDIuMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDM0NCAxMDIuMjQ7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojRjdFODJFO30KCS5zdDF7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojMjhBOEUwO30KCS5zdDJ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojRTYyQTJCO30KCS5zdDN7ZmlsbDojRkZGRkZGO30KCS5zdDR7ZmlsbDojMjhBOEUwO30KCS5zdDV7ZmlsbDojMEQ1QjcxO30KPC9zdHlsZT4KPGc+Cgk8Zz4KCQk8cmVjdCBpZD0icmVjdDYxODczXzFfIiB4PSIzMy4wOCIgeT0iMi40NyIgY2xhc3M9InN0MCIgd2lkdGg9Ijk3Ljc0IiBoZWlnaHQ9Ijk3Ljc0Ii8+CgkJPHBhdGggaWQ9InBhdGg2MTg3NV8xXyIgY2xhc3M9InN0MSIgZD0iTTUyLjc4LDM3Ljg5YzIuNjItMS40NSw2LjI5LTIuNTksOS4yMy0yLjU5YzUuNjEsMCw2LjkxLDIuNTksOS42NywyLjU5CgkJCXM1LjU5LTIuNTksMTAuNjktMi41OWM0LjY0LDAsNy4wOSwyLjU5LDExLjIyLDIuNTljNC4xMywwLDMuMjctMi41OSw5LjA5LTIuNTljNS43OSwwLDguNDQsMi41OSw4LjQ0LDIuNTl2Ni41OQoJCQljMCwwLTMuMDktMi43NS03Ljk1LTIuODJjLTQuODItMC4wNi00LjY5LDIuODItOS41NywyLjgyYy00Ljg4LDAtNS4yNy0yLjgyLTExLTIuODJjLTUuNzIsMC02LjU5LDIuODItMTEuMDEsMi44MgoJCQljLTQuNDMsMC01LjI3LTIuOTMtOS44OC0yLjg3Yy00LjYyLDAuMDYtOC45MiwyLjg3LTguOTIsMi44N1YzNy44OXoiLz4KCQk8cGF0aCBpZD0icGF0aDYxODc3XzFfIiBjbGFzcz0ic3QxIiBkPSJNNTIuNzgsNTMuMjZjMi42Mi0xLjQ1LDYuMjktMi41OCw5LjIzLTIuNThjNS42MSwwLDYuOTEsMi41OCw5LjY3LDIuNTgKCQkJczUuNTktMi41OCwxMC42OS0yLjU4YzQuNjQsMCw3LjA5LDIuNTgsMTEuMjIsMi41OGM0LjEzLDAsMy4yNy0yLjU4LDkuMDktMi41OGM1Ljc5LDAsOC40NCwyLjU4LDguNDQsMi41OHY2LjYKCQkJYzAsMC0zLjA5LTIuNzctNy45NS0yLjgyYy00LjgyLTAuMDUtNC42OSwyLjgyLTkuNTcsMi44MmMtNC44OCwwLTUuMjctMi44Mi0xMS0yLjgyYy01LjcyLDAtNi41OSwyLjgyLTExLjAxLDIuODIKCQkJYy00LjQzLDAtNS4yNy0yLjkzLTkuODgtMi44N2MtNC42MiwwLjA1LTguOTIsMi44Ny04LjkyLDIuODdWNTMuMjZ6Ii8+CgkJPHBhdGggaWQ9InBhdGg2MTg3OV8xXyIgY2xhc3M9InN0MSIgZD0iTTUyLjc4LDY4LjYyYzIuNjItMS40Niw2LjI5LTIuNTksOS4yMy0yLjU5YzUuNjEsMCw2LjkxLDIuNTksOS42NywyLjU5CgkJCXM1LjU5LTIuNTksMTAuNjktMi41OWM0LjY0LDAsNy4wOSwyLjU5LDExLjIyLDIuNTljNC4xMywwLDMuMjctMi41OSw5LjA5LTIuNTljNS43OSwwLDguNDQsMi41OSw4LjQ0LDIuNTl2Ni42MQoJCQljMCwwLTMuMDktMi43Ny03Ljk1LTIuODNjLTQuODItMC4wNS00LjY5LDIuODMtOS41NywyLjgzYy00Ljg4LDAtNS4yNy0yLjgzLTExLTIuODNjLTUuNzIsMC02LjU5LDIuODMtMTEuMDEsMi44MwoJCQljLTQuNDMsMC01LjI3LTIuOTQtOS44OC0yLjg4Yy00LjYyLDAuMDUtOC45MiwyLjg4LTguOTIsMi44OFY2OC42MnoiLz4KCQk8cG9seWdvbiBpZD0icG9seWdvbjYxODgxXzFfIiBjbGFzcz0ic3QyIiBwb2ludHM9Ijc5LjE4LDg5Ljk1IDg2LjU4LDUyLjc3IDYwLjI5LDY0LjM0IDc1LjY2LDE1LjUyIDg4LjE3LDE1LjUyIDczLjU5LDQ5LjM2IAoJCQk5OS41NCwzOC44NiAJCSIvPgoJPC9nPgoJPGc+CgkJPHBhdGggY2xhc3M9InN0NCIgZD0iTTE4OS4zNiwxOC4wOWMwLDUuNDktMS43NSw5LjczLTUuMjQsMTIuNzJjLTMuNSwyLjk5LTguNDYsNC40OS0xNC45LDQuNDloLTQuMDN2MTYuM2gtMTQuMzRWMi40N2gxOC4zNgoJCQljNi43LDAsMTEuNzMsMS4zNiwxNS4xLDQuMDdDMTg3LjY4LDkuMjQsMTg5LjM2LDEzLjEsMTg5LjM2LDE4LjA5eiBNMTY1LjE5LDI0LjQ4aDIuNjFjMi4xNSwwLDMuODctMC41Niw1LjE0LTEuNjgKCQkJYzEuMjctMS4xMiwxLjkxLTIuNjcsMS45MS00LjY0YzAtMy4zMi0xLjk4LTQuOTctNS45NS00Ljk3aC0zLjdWMjQuNDh6Ii8+CgkJPHBhdGggY2xhc3M9InN0NCIgZD0iTTIwNy40OCw1MS42VjIuNDdoMTQuMzR2MzguNDFoMjAuNDNWNTEuNkgyMDcuNDh6Ii8+CgkJPHBhdGggY2xhc3M9InN0NCIgZD0iTTMxMC45Miw1MS42aC0xOC44bC0xOS4zOC0zNC42MmgtMC4zM2MwLjQ2LDUuNDQsMC42OSw5LjYsMC42OSwxMi40N1Y1MS42aC0xMi43VjIuNDdoMTguNzNsMTkuMzEsMzQuMTUKCQkJaDAuMjJjLTAuMzQtNC45NS0wLjUxLTguOTMtMC41MS0xMS45M1YyLjQ3aDEyLjc3VjUxLjZ6Ii8+Cgk8L2c+Cgk8Zz4KCQk8cGF0aCBjbGFzcz0ic3Q1IiBkPSJNMTUwLjg2LDg5LjMxbDMuODEtMC4zNWMwLjIsMS43NywwLjY2LDMuMTUsMS4zOSw0LjEzYzAuNzIsMC45OSwxLjc1LDEuNzgsMy4wOSwyLjM4CgkJCWMxLjM0LDAuNiwyLjg1LDAuOSw0LjUyLDAuOWMyLjQxLDAsNC4yNy0wLjUxLDUuNi0xLjUyYzEuMzMtMS4wMSwyLTIuMzMsMi0zLjk1YzAtMC45NS0wLjI0LTEuNzgtMC43Mi0yLjQ4CgkJCWMtMC40OC0wLjcxLTEuMjEtMS4yOS0yLjE5LTEuNzRjLTAuOTctMC40NS0zLjA4LTEuMDktNi4zMS0xLjkyYy0yLjg4LTAuNzQtNC45My0xLjQ4LTYuMTUtMi4yMmMtMS4yMi0wLjc1LTIuMTctMS42OS0yLjg1LTIuODQKCQkJYy0wLjY4LTEuMTUtMS4wMi0yLjQ0LTEuMDItMy44OWMwLTIuNiwwLjk3LTQuNzMsMi45Mi02LjM4YzEuOTUtMS42NSw0LjU3LTIuNDgsNy44OC0yLjQ4YzIuMjcsMCw0LjI2LDAuMzksNS45NiwxLjE2CgkJCWMxLjcsMC43NywzLjAyLDEuODksMy45NiwzLjMzYzAuOTQsMS40NSwxLjQ0LDMuMTUsMS41MSw1LjExbC0zLjg5LDAuMzFjLTAuMi0yLjA5LTAuOTMtMy42NC0yLjE3LTQuNjUKCQkJYy0xLjI1LTEuMDEtMy0xLjUxLTUuMjUtMS41MWMtMi4yOSwwLTQuMDMsMC40NC01LjIzLDEuMzNjLTEuMiwwLjg4LTEuOCwyLjAzLTEuOCwzLjQzYzAsMS4zLDAuNDQsMi4zMSwxLjMyLDMuMDIKCQkJYzAuODgsMC43MiwyLjg2LDEuNDQsNS45NCwyLjE4YzMuMDEsMC43Miw1LjEzLDEuMzQsNi4zNSwxLjg3YzEuODYsMC44MiwzLjI3LDEuOSw0LjIyLDMuMjRjMC45NSwxLjM0LDEuNDMsMi45MywxLjQzLDQuNzgKCQkJYzAsMS44NC0wLjUsMy41Mi0xLjUsNS4wM2MtMSwxLjUxLTIuMzYsMi42Ni00LjA4LDMuNDVjLTEuNzIsMC43OS0zLjc5LDEuMTgtNi4yMSwxLjE4Yy0zLjc4LDAtNi43OS0wLjk4LTkuMDMtMi45NAoJCQlDMTUyLjExLDk1LjMxLDE1MC45NCw5Mi42NiwxNTAuODYsODkuMzF6Ii8+CgkJPHBhdGggY2xhc3M9InN0NSIgZD0iTTE5NS4yOCw5Mi4xNmwzLjg2LDAuNWMtMC42NCwyLjQ4LTEuODEsNC4zNi0zLjQ5LDUuNjJjLTEuNjksMS4yNi0zLjc3LDEuOS02LjI2LDEuOQoJCQljLTMuMTMsMC01LjY3LTEuMDMtNy42MS0zLjA4Yy0xLjk0LTIuMDUtMi45MS01LjAyLTIuOTEtOC44OWMwLTQuMDIsMC45OC03LjA4LDIuOTMtOS4yYzEuOTYtMi4xMSw0LjQzLTMuMTcsNy40My0zLjE3CgkJCWMyLjg2LDAsNS4yNSwxLjA0LDcuMTcsMy4xMWMxLjkxLDIuMDgsMi44Nyw1LjA4LDIuODcsOS4wMWwtMC4wMywxLjA1aC0xNi41MmMwLjE1LDIuNjIsMC44NSw0LjU5LDIuMTEsNS45MgoJCQljMS4yNSwxLjMzLDIuNzgsMiw0LjU3LDJDMTkyLjIyLDk2Ljk0LDE5NC4xOCw5NS4zNSwxOTUuMjgsOTIuMTZ6IE0xODIuOTUsODUuNzhoMTIuMzVjLTAuMTctMi4wMi0wLjY3LTMuNTItMS41LTQuNTIKCQkJYy0xLjItMS40NS0yLjc0LTIuMTctNC42LTIuMTdjLTEuNjgsMC0zLjExLDAuNi00LjI5LDEuODFDMTgzLjcyLDgyLjExLDE4My4wNyw4My43NCwxODIuOTUsODUuNzh6Ii8+CgkJPHBhdGggY2xhc3M9InN0NSIgZD0iTTIwMy44OSw5OS42NlY3Ni4zOGgzLjM4djMuNTNjMC44Ni0xLjY0LDEuNjYtMi43MiwyLjM4LTMuMjVzMS41My0wLjgsMi40My0wLjhjMS4yNSwwLDIuNTMsMC40MiwzLjg0LDEuMjcKCQkJbC0xLjI3LDMuNjZjLTAuOTMtMC41Ny0xLjg0LTAuODUtMi43Mi0wLjg1Yy0wLjgsMC0xLjUzLDAuMjQtMi4xOSwwLjcyYy0wLjY2LDAuNDgtMS4xMywxLjE1LTEuNCwyLjAyCgkJCWMtMC40NywxLjUtMC43MSwzLjExLTAuNzEsNC44djEyLjE5SDIwMy44OXoiLz4KCQk8cGF0aCBjbGFzcz0ic3Q1IiBkPSJNMjI0LjI4LDk5LjY2bC04LjQyLTIzLjI4aDMuOTZsNC43NiwxMy45NGMwLjU0LDEuNTgsMS4wMiwzLjE0LDEuNDMsNC42OWMwLjMyLTEuMjMsMC43OC0yLjcsMS4zNy00LjQzCgkJCWw0Ljk0LTE0LjIxaDMuODZsLTguNDIsMjMuMjhIMjI0LjI4eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDUiIGQ9Ik0yMzkuNDQsNzIuMDZ2LTQuNTRoMy43NHY0LjU0SDIzOS40NHogTTIzOS40NCw5OS42NlY3Ni4zOGgzLjc0djIzLjI4SDIzOS40NHoiLz4KCQk8cGF0aCBjbGFzcz0ic3Q1IiBkPSJNMjYzLjQsOTEuMTNsMy42OSwwLjVjLTAuNDIsMi43OC0xLjQ5LDQuOS0zLjE5LDYuMzZjLTEuNywxLjQ2LTMuNzUsMi4xOS02LjE0LDIuMTkKCQkJYy0yLjksMC01LjI4LTEuMDMtNy4xNS0zLjA4Yy0xLjg3LTIuMDUtMi44MS01LjA5LTIuODEtOS4xMWMwLTQuMDUsMC45NS03LjA4LDIuODMtOS4xMWMxLjg5LTIuMDIsNC4zMi0zLjA0LDcuMjgtMy4wNAoJCQljMi4yOSwwLDQuMjEsMC42MSw1Ljc4LDEuODRjMS41NywxLjIzLDIuNTcsMy4wNywzLjAxLDUuNTJsLTMuNjMsMC41N2MtMC4zNi0xLjU3LTAuOTctMi43NC0xLjg2LTMuNTIKCQkJYy0wLjg4LTAuNzgtMS45NC0xLjE3LTMuMTgtMS4xN2MtMS44NSwwLTMuMzgsMC43MS00LjU5LDIuMTFjLTEuMjEsMS40MS0xLjgyLDMuNjUtMS44Miw2LjcyYzAsMy4xNywwLjU4LDUuNDcsMS43NCw2Ljg4CgkJCWMxLjE2LDEuNDIsMi42NSwyLjEzLDQuNDYsMi4xM2MxLjQyLDAsMi42NC0wLjQ3LDMuNjUtMS40MUMyNjIuNDksOTQuNTgsMjYzLjEzLDkzLjEyLDI2My40LDkxLjEzeiIvPgoJCTxwYXRoIGNsYXNzPSJzdDUiIGQ9Ik0yODUuMzgsOTIuMTZsMy44NiwwLjVjLTAuNjQsMi40OC0xLjgxLDQuMzYtMy40OSw1LjYyYy0xLjY5LDEuMjYtMy43NywxLjktNi4yNiwxLjkKCQkJYy0zLjEzLDAtNS42Ny0xLjAzLTcuNjEtMy4wOGMtMS45NC0yLjA1LTIuOTEtNS4wMi0yLjkxLTguODljMC00LjAyLDAuOTgtNy4wOCwyLjkzLTkuMmMxLjk2LTIuMTEsNC40My0zLjE3LDcuNDMtMy4xNwoJCQljMi44NiwwLDUuMjUsMS4wNCw3LjE3LDMuMTFjMS45MSwyLjA4LDIuODcsNS4wOCwyLjg3LDkuMDFsLTAuMDMsMS4wNWgtMTYuNTJjMC4xNSwyLjYyLDAuODUsNC41OSwyLjExLDUuOTIKCQkJYzEuMjUsMS4zMywyLjc4LDIsNC41NywyQzI4Mi4zMyw5Ni45NCwyODQuMjgsOTUuMzUsMjg1LjM4LDkyLjE2eiBNMjczLjA2LDg1Ljc4aDEyLjM1Yy0wLjE3LTIuMDItMC42Ny0zLjUyLTEuNS00LjUyCgkJCWMtMS4yLTEuNDUtMi43NC0yLjE3LTQuNi0yLjE3Yy0xLjY4LDAtMy4xMSwwLjYtNC4yOSwxLjgxQzI3My44Myw4Mi4xMSwyNzMuMTgsODMuNzQsMjczLjA2LDg1Ljc4eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDUiIGQ9Ik0yOTIuNTUsOTIuNjlsMy43NC0wLjYxYzAuMjIsMS42NCwwLjgyLDIuODcsMS44LDMuNjdjMC45OCwwLjgsMi4yOCwxLjIsMy45LDEuMmMxLjYyLDAsMi44OC0wLjM1LDMuNzctMS4wNAoJCQljMC44OS0wLjY5LDEuMzMtMS41NywxLjMzLTIuNjRjMC0wLjkyLTAuMzgtMS42NC0xLjE0LTIuMTVjLTAuNTMtMC4zNS0xLjgtMC43OS0zLjgxLTEuMzJjLTIuOTEtMC43Ny00Ljg2LTEuNDMtNS44NS0xLjk3CgkJCWMtMC45OC0wLjU0LTEuNzQtMS4yNi0yLjI5LTIuMTdjLTAuNTQtMC45MS0wLjgxLTEuOTQtMC44MS0zLjA5YzAtMS45OSwwLjc0LTMuNiwyLjIxLTQuODRjMS40Ny0xLjI0LDMuNTItMS44Niw2LjEyLTEuODYKCQkJYzEuNjQsMCwzLjA5LDAuMjYsNC4zMywwLjc3YzEuMjUsMC41MSwyLjIsMS4yLDIuODYsMi4wNmMwLjY2LDAuODYsMS4xMiwyLjEsMS4zNywzLjdsLTMuNjYsMC41M2MtMC4zNC0yLjU0LTEuOTQtMy44MS00LjgtMy44MQoJCQljLTEuNjMsMC0yLjg0LDAuMjgtMy42MywwLjg0Yy0wLjgsMC41Ni0xLjE5LDEuMjgtMS4xOSwyLjE1YzAsMC44NiwwLjM4LDEuNTQsMS4xNSwyLjAzYzAuNDYsMC4yOSwxLjgyLDAuNzYsNC4wNywxLjQKCQkJYzMuMSwwLjg1LDUuMTEsMS41Myw2LjAyLDIuMDNjMC45MSwwLjUsMS42MiwxLjE5LDIuMTMsMi4wNmMwLjUxLDAuODcsMC43NiwxLjkxLDAuNzYsMy4xMWMwLDIuMjItMC44Miw0LjAzLTIuNDUsNS40CgkJCWMtMS42NCwxLjM4LTMuODcsMi4wNi02LjcsMi4wNkMyOTYuNDcsMTAwLjE4LDI5My40LDk3LjY4LDI5Mi41NSw5Mi42OXoiLz4KCTwvZz4KPC9nPgo8L3N2Zz4=';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k)||'';localStorage.setItem(k,v)}catch(e){return ''}};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const N=s=>{const x=parseFloat(String(s).replace(',','.'));return isNaN(x)?NaN:x};
+const F=(x,d=2)=>typeof x=='number'&&isFinite(x)?String(+x.toFixed(d)):'';
+const dfmt=s=>s?s.split('-').reverse().join('-'):'';
+const ratioVal=s=>{const m=String(s).match(/([\d.,]+)\s*[\/:]\s*([\d.,]+)/);return m?N(m[1])/N(m[2]):NaN};
+const CP={pmt:'PMT LV',ct:'CT LV',vt:'VT (BBVT)',relay:'RELAY OCR'};
+const OP={TB:['Tidak Baik','Baik'],LK:['Longgar','Kencang'],KB:['Kotor','Bersih'],AN:['Abnormal','Normal'],AD:['Ada','Tidak Ada']};
+const opt=x=>typeof x=='string'?OP[x]:x;
+const CO1='PT PLN (PERSERO) UNIT INDUK DISTRIBUSI SULUTTENGGO',CO2='UNIT PELAKSANA PENGATUR DISTRIBUSI SULUTTENGGO';
+const mkT=(a,b,n)=>['LEMBAR CHECKLIST\nPEMELIHARAAN '+n,'LEMBAR HASIL PEMELIHARAAN\nPENGUJIAN / PENGUKURAN '+n];
+const TTL={pmt:mkT(0,0,'PMT 20 KV'),ct:mkT(0,0,'CT 20 KV'),vt:mkT(0,0,'VT/CVT'),relay:['CHECKLIST PEKERJAAN PEMELIHARAAN PERIODIK PROTEKSI BACKUP\nKOPEL/OUTGOING 20 KV','PENGUJIAN RELAY OCR/GFR']};
+const TLN={pmt:'TL Har Elektromekanik',ct:'TL Har Elektromekanik',vt:'TL Har Elektromekanik',relay:'TL Proteksi dan Meter'};
+/* ---- data inspeksi per komponen (mengikuti header Excel) ---- */
+const TRM=[['merk','Merk Fasa R/S/T'],['type','Type'],['cls','Class Fasa R/S/T'],['ratio','Ratio']],TRR=[['burden','Burden Fasa R/S/T'],['thn','Thn Buat'],['snr','S/N Fasa R'],['sns','S/N Fasa S'],['snt','S/N Fasa T']];
+const HF={pmt:{M:[['mk','Merk Kubikel'],['tk','Type Kubikel'],['sk','S/N Kubikel'],['mp','Media Pemadam']],R:[['mpmt','Merk PMT'],['tpmt','Type PMT'],['spmt','S/N PMT'],['thn','Thn Buat PMT']]},ct:{M:TRM,R:TRR},vt:{M:TRM,R:TRR},
+relay:{M:[['mkub','Merek Kubikel'],['skub','No. Seri Kubikel'],['rp','Ratio CT Primer (A)'],['rs','Ratio CT Sekunder (A)']],R:[['mrel','Merek Relay'],['trel','Tipe Relay'],['srel','No. Seri Relay'],['mr','Metering Fasa R (A Pri)',1],['ms','Metering Fasa S (A Pri)',1],['mt','Metering Fasa T (A Pri)',1]]}};
+const HFL=c=>[...HF[c].M,...HF[c].R];
+/* ---- checklist: [grup,[[item,opsi]],flag(1=opsional,2=kolom tunggal)] ---- */
+const GR=['Pentanahan (Grounding)',[['Kawat Pentanahan','TB'],['Terminal Pentanahan','LK']]],BT=['Kekencangan Baut',[['Terminal Utama','LK'],['Pentanahan','LK'],['Baut wiring pada terminal box','LK']]],PD=['Pondasi',[['Keretakan','AD'],['Memeriksa Kemiringan','AD']]];
+const CK={
+pmt:[['Pentanahan (Grounding)',[['Kawat Pentanahan','TB'],['Terminal Pentanahan','TB']]],['Lemari / Box Terminal Wiring',[['Baut-baut wiring kontrol dan proteksi','LK'],['Kebersihan','KB'],['Sumber tegangan AC/DC','AN'],['Lubang Binatang','AD']]],
+['Bodi & Isolator',[['Kebersihan','KB'],['Bagian bodi yang lecet, berkarat','AD'],['Badan bushing yang retak','AD'],['Mekanik penggerak','KB']]],
+['Mekanik Penggerak',[['Mekanik Penggerak','AN'],['Mur Baut','LK'],['Pelumasan pada roda gigi dan pegas transmisi',['Tidak Ada','Baik']],['Pengungkit / lengan penggerak','AN']]],
+['Minyak (Khusus jenis LOC)',[['Level Minyak','AN'],['Kondisi Minyak (warna)','AN'],['Kebocoran / rembes','AD']],1],
+['Percobaan ON / OFF PMT',[['Posisi ON','AN'],['Posisi OFF','AN'],['Indikasi Posisi ON / OFF','AN']]]],
+ct:[GR,['Terminal Box',[['Kebersihan','KB'],['Kemasukan Air','AD'],['Memeriksa kekencangan mur baut','LK']]],['Body dan Bushing',[['Kebersihan','KB'],['Memeriksa keadaan fisik (keretakan/lecet)','AD'],['Kaca Penduga','TB']]],BT,
+['Uji Fungsi Limit Switch',[['Indikator','AN'],['Alarm Low Pressure SF6 (khusus CT media SF6)','AN']],1],PD],
+vt:[GR,['Lemari / Box Terminal',[['Kebersihan','KB'],['Kemasukan Air','AD']]],['Body dan Bushing',[['Kebersihan','KB'],['Bagian bodi yang lecet / berkarat','AD'],['Kaca Penduga','TB']]],BT,['Pemeriksaan Fuse & MCB',[['Fuse','TB'],['MCB','TB']]],PD],
+relay:[['Overcurrent/Ground Fault Relay LV — Pemeriksaan',[['Pemeriksaan visual relai sebelum dan sesudah pekerjaan',['Normal','Abnormal']],['Pengencangan mur-baut pada terminal wiring dan terminal grounding',['Kencang','Longgar']],['Pembersihan kontak-kontak relai',['Bersih','Kotor']]]],
+['Item Pekerjaan — Pengujian',[['Cek setting/resetting dan ratio CT',['Ya','Tidak']],['Pengujian I pick-up',['Ya','Tidak']],['Pengujian karakteristik waktu',['Ya','Tidak']]],2]]};
+/* ---- hasil uji ---- */
+const ISO='R > 60 MΩ = Baik\n51 ≤ R ≤ 60 MΩ = Cukup\n21 ≤ R ≤ 50 MΩ = Kurang\n',GND='R ≤ 0,8 Ω = Baik\n0,8 < R ≤ 1 Ω = Cukup\n1 < R ≤ 5 Ω = Kurang\n(kondisi pentanahan terlepas dari struktur)';
+const a=(l,c,r,s)=>({l,c,r,s}),S5=f=>[1,2,3,4,5].map(f);
+const PAIRS=[];for(let x=1;x<5;x++)for(let y=x+1;y<=5;y++)PAIRS.push(a('Sekunder '+x+' - Sekunder '+y+' (MΩ)'));
+const UJ={
+pmt:[{t:'TAHANAN ISOLASI',a:ISO+'1 KV / 1 MΩ (injeksi 10 kV DC)',r:'iso',i:[a('Atas - Bawah (MΩ)','PMT Terbuka'),a('Atas - Tanah (MΩ)','PMT Terbuka'),a('Bawah - Tanah (MΩ)','PMT Terbuka'),a('Fasa - Tanah (MΩ)','PMT Tertutup')]},
+{t:'TAHANAN KONTAK',a:'R < 100 μΩ = Baik\n100 ≤ R ≤ 120 μΩ = Cukup\n120 < R < 200 μΩ = Kurang\n(injeksi 100 A)',r:'kon',i:[a('Atas - Bawah (μΩ)','PMT Tertutup')]},
+{t:'TAHANAN PENTANAHAN',a:GND,r:'gnd',i:[a('Terminal Pentanahan','',0,1)]},
+{t:'KESEREMPAKAN',a:'Δt < 10 ms',r:'sync',i:[a('Waktu Buka','(millisecond)'),a('Waktu Tutup','(millisecond)')]},
+{t:'WAKTU KERJA KONTAK',a:'T Buka ≤ 50 ms = Baik\n50 < T Buka ≤ 60 ms = Cukup\n60 < T Buka ≤ 65 ms = Kurang\n\nT Tutup ≤ 80 ms = Baik\n80 < T Tutup ≤ 110 ms = Cukup\n110 < T Tutup ≤ 120 ms = Kurang',i:[a('Waktu Buka','(millisecond)','bk'),a('Waktu Tutup','(millisecond)','tt')]},
+{t:'TRIPPING COIL',a:'Tahanan Coil = ± 5% Nameplate = Baik',i:[a('Tahanan Coil TC-1','(Ω)',0,1),a('Tahanan Coil TC-2','(Ω)',0,1),a('Tegangan Minimum Coil TC-1','(volt)',0,1),a('Tegangan Minimum Coil TC-2','(volt)',0,1)]},
+{t:'CLOSING COIL',a:'Tahanan Coil = ± 5% Nameplate = Baik',i:[a('Tahanan Coil CC-1','(Ω)',0,1),a('Tahanan Coil CC-2','(Ω)',0,1),a('Tegangan Minimum','(V)',0,1)]},
+{t:'MOTOR',a:'Nameplate',i:[a('Arus motor penggerak','(A)',0,1),a('Tegangan Motor Penggerak','(V)',0,1)]},
+{t:'TEGANGAN TEMBUS MINYAK (Jika menggunakan minyak)',a:'',i:[a('Tegangan Tembus Minyak PMT','',0,1)]},
+{t:'TEKANAN GAS N2 (Jika menggunakan N2)',a:'',i:[a('Pressure Gauge (visual)','bar',0,1)]},
+{t:'MEDIA ISOLASI VACUUM (Jika menggunakan VACUUM)',a:'',i:[a('Uji Media Isolasi Vacuum','μA',0,1)]},
+{t:'TEKANAN GAS SF6 (Jika menggunakan SF6)',a:'',i:[a('Pressure Gauge (visual)','bar',0,1)]}],
+ct:[{t:'TAHANAN ISOLASI — Primer - Tanah',a:ISO+'(injeksi 5 kV DC)',r:'iso',i:[a('Primer - Tanah (MΩ)')]},
+{t:'TAHANAN ISOLASI — Sekunder - Tanah',a:ISO+'(injeksi 500 V DC)',r:'iso',i:S5(n=>a('Sekunder '+n+' - Tanah (MΩ)'))},
+{t:'TAHANAN ISOLASI — Primer - Sekunder',a:ISO+'(injeksi 5 kV DC)',r:'iso',i:S5(n=>a('Primer - Sekunder '+n+' (MΩ)'))},
+{t:'TAHANAN ISOLASI — Sekunder - Sekunder',a:ISO+'(injeksi 500 V DC)',r:'iso',i:PAIRS},
+{t:'TAHANAN PENTANAHAN',a:GND,r:'gnd',i:[a('Nilai Tahanan Pentanahan (Ω)','',0,1)]}],
+vt:[{t:'TAHANAN ISOLASI — Primer',a:ISO+'(injeksi 5 kV DC)',r:'iso',i:[a('Primer – Ground (MΩ)'),a('Primer – Sekunder (1a) (MΩ)'),a('Primer – Sekunder (2a) (MΩ)')]},
+{t:'TAHANAN ISOLASI — Sekunder',a:ISO+'(injeksi 500 V DC)',r:'iso',i:[a('Sekunder (1a) – Sekunder (2a) (MΩ)'),a('Sekunder (1a) – Ground (MΩ)'),a('Sekunder (2a) – Ground (MΩ)')]},
+{t:'TAHANAN PENTANAHAN (Ω)',a:GND,r:'gnd',i:[a('Tahanan Pentanahan (Ω)','',0,1)]},
+{t:'RASIO',a:'IEC 60044-5 “Instrument Transformer Part-5” Edisi I tahun 2004.',i:[a('Tegangan Primer (V)','',0,1),a('Tegangan Sekunder core proteksi (V)','',0,1),a('Tegangan Sekunder core metering (V)','',0,1)]}]};
+const G=(f,w)=>v=>{v=v.filter(x=>!isNaN(x));return v.length?f(Math[w](...v)):''};
+const R={iso:G(v=>v>60?'Baik':v>=51?'Cukup':v>=21?'Kurang':'Buruk','min'),kon:G(v=>v<100?'Baik':v<=120?'Cukup':v<200?'Kurang':'Buruk','max'),
+gnd:G(v=>v<=.8?'Baik':v<=1?'Cukup':v<=5?'Kurang':'Buruk','max'),bk:G(v=>v<=50?'Baik':v<=60?'Cukup':v<=65?'Kurang':'Buruk','max'),tt:G(v=>v<=80?'Baik':v<=110?'Cukup':v<=120?'Kurang':'Buruk','max'),
+sync:v=>{v=v.filter(x=>!isNaN(x));if(v.length<2)return'';const d=Math.max(...v)-Math.min(...v);return 'Δt '+F(d,1)+' ms – '+(d<10?'Baik':'Buruk')}};
+const V=n=>{const e=$$('[name="'+n+'"]');if(!e.length)return'';if(e[0].type=='radio'){const c=e.find(x=>x.checked);return c?c.value:''}return e[0].value.trim()};
+const auto=(c,gi,ii)=>{const g=UJ[c][gi],it=g.i[ii],r=R[it.r||g.r];if(!r)return'';const n='u.'+c+'.'+gi+'.'+ii+'.',get=p=>[0,1,2].map(i=>N(V(n+p+i)));let v=get('k');if(!v.some(x=>!isNaN(x)))v=get('a');return r(v)};
+/* ---- perhitungan relay & CT ---- */
+const mv=n=>N(V('m.r.'+n));
+function rc(){const rt=N(V('h.relay.rp'))/N(V('h.relay.rs')),M=[1.5,2,3,4],K=[0,1,2,3,4,5],si=(t,m)=>0.14*t/(Math.pow(m,0.02)-1),
+tms=mv('tms'),i1=mv('i1'),ie=mv('ie'),tg=mv('tmsg'),ip=[...M.map(m=>i1*m),mv('i2'),mv('i3')],ht=[...M.map(m=>si(tms,m)),mv('t2'),mv('t3')],
+gp=[...M.map(m=>ie*m),mv('ie2')],gh=[...M.map(m=>si(tg,m)),mv('tie2')],er=(h,hu)=>h.map((x,k)=>Math.abs(hu[k]-x)/hu[k]*100);
+const o={kd:[0,1,2,3].map(k=>mv('id.'+k)/mv('ir.'+k)*100),ip,is:ip.map(x=>x/rt),ht,gp,gs:gp.map(x=>x/rt),gh,er:{}};
+['RS','ST','TR'].forEach(p=>o.er[p]=er(ht,K.map(k=>N(V('m.r.hu.'+p+'.'+k)))));o.ge=er(gh,[0,1,2,3,4].map(k=>N(V('m.r.hg.'+k))));return o}
+function cc(){const rt=ratioVal(V('h.ct.ratio')),g=p=>Array.from({length:12},(_,k)=>N(V('m.ct.'+p+'.'+k))),ip=g('ip'),is=g('is'),te=ip.map(x=>x/rt);
+return{te,ra:ip.map((x,k)=>x/is[k]),er:is.map((x,k)=>(x-te[k])/te[k]*100)}}
+function recalc(){const set=(id,v)=>$$('[data-cv="'+id+'"]').forEach(e=>e.textContent=v);
+if(!$('#pn-relay').hidden){const r=rc();r.kd.forEach((v,k)=>set('kd.'+k,F(v)));r.ip.forEach((v,k)=>{set('ip.'+k,F(v));set('isec.'+k,F(r.is[k]));set('ht.'+k,F(r.ht[k]))});
+['RS','ST','TR'].forEach(p=>r.er[p].forEach((v,k)=>set('er.'+p+'.'+k,F(v))));r.gp.forEach((v,k)=>{set('gp.'+k,F(v));set('gs.'+k,F(r.gs[k]));set('gh.'+k,F(r.gh[k]));set('ge.'+k,F(r.ge[k]))})}
+if(!$('#pn-ct').hidden){const c=cc();c.te.forEach((v,k)=>{set('te.'+k,F(v,3));set('cr.'+k,F(c.ra[k]));set('ce.'+k,F(c.er[k]))})}}
+/* mx = tabel bebas (Injeksi Primer CT & seluruh hasil uji Relay) */
+function mx(c){
+if(c=='ct'){const g=p=>Array.from({length:12},(_,k)=>V('m.ct.'+p+'.'+k)),q=cc(),hd=[];['R','S','T'].forEach(f=>[25,50,75,100].forEach(p=>hd.push(f+' '+p+'% In')));
+return[{sec:'INJEKSI PRIMER*'},{h:1,l:'ARUS UJI',v:hd},{l:'I Primer (A)',v:g('ip')},{l:'I Sekunder (A) - Core Proteksi',v:g('is')},{l:'I Sekunder (A) - Core Metering',v:g('im')},{l:'I Sekunder Teori (A)',v:q.te.map(x=>F(x,3))},{l:'Ratio (Ip/Is)',v:q.ra.map(x=>F(x))},{l:'Current Error (%)',v:q.er.map(x=>F(x))}]}
+if(c!='relay')return[];
+const r=rc(),f=a=>a.map(x=>F(x)),i=n=>V('m.r.'+n),o=[];
+o.push({sec:'I. ARUS PICK UP'},{h:1,l:'',v:['OCR Fase R','OCR Fase S','OCR Fase T','GFR (N)']});
+[['Arus Setting (Is) - A','is'],['Arus Kerja (Ir) - A','ir'],['Arus Kembali (Id) - A','id']].forEach(x=>o.push({l:x[0],v:[0,1,2,3].map(k=>i(x[1]+'.'+k))}));
+o.push({l:'Reset Ratio (Kd) Id/Ir - %',v:f(r.kd)},{n:'Standar Hasil Uji Reset Ratio 95-98% (IEC 60255-151)'});
+o.push({sec:'II. KARAKTERISTIK WAKTU — OVER CURRENT RELAY (OCR)'},{l:'Setting',v:['I> (A Pri)',i('i1'),'TMS',i('tms'),'Kurva','SI']},{l:'Setting',v:['I>> (A Pri)',i('i2'),'t>> (ms)',i('t2'),'I>>> (A Pri)',i('i3'),'t>>> (ms)',i('t3')]},
+{h:1,l:'Nominal Injeksi (x Is)',v:['1.5','2','3','4','I>>','I>>>']},{l:'Arus Injeksi (Primer)',v:f(r.ip)},{l:'Arus Injeksi (Sekunder)',v:f(r.is)},{l:'Hitungan (ms)',v:f(r.ht)});
+['RS','ST','TR'].forEach(p=>{const t=p[0]+'-'+p[1];o.push({l:t+' Hasil Uji (ms)',v:[0,1,2,3,4,5].map(k=>i('hu.'+p+'.'+k))},{l:t+' Error (%)',v:f(r.er[p])})});
+o.push({sec:'GROUND FAULT RELAY (GFR)'},{l:'Setting',v:['Ie> (A Pri)',i('ie'),'TMS',i('tmsg'),'Ie>> (A Pri)',i('ie2'),'tIe>> (ms)',i('tie2')]},{h:1,l:'Nominal Injeksi (x Is)',v:['1.5','2','3','4','Ie>>']},
+{l:'Arus Injeksi (Primer)',v:f(r.gp)},{l:'Arus Injeksi (Sekunder)',v:f(r.gs)},{l:'Hitungan (ms)',v:f(r.gh)},{l:'N Hasil Uji (ms)',v:[0,1,2,3,4].map(k=>i('hg.'+k))},{l:'N Error (%)',v:f(r.ge)},{n:'Standar Hasil Uji Karakteristik Waktu ±5% (IEC 60255-151)'});
+o.push({sec:'III. UJI FUNGSI PROTEKSI'},{h:1,l:'Indikator Fungsi',v:['Status','Keterangan']});
+['PMT','Indikasi Rele','Announciator / Horn'].forEach((x,k)=>o.push({l:x,v:[i('f.'+k+'.s'),i('f.'+k+'.k')]}));return o}
+/* ---- form ---- */
+const sel=()=>$('#comp').value;
+const fr=(lb,nm,o={})=>'<label class="fr"><span>'+lb+(o.opt?'':'<b class="rq">*</b>')+'</span><input name="'+nm+'"'+(o.t?' type="'+o.t+'"':'')+(o.opt?'':' data-req="'+lb+'"')+(o.v?' value="'+o.v+'"':'')+'></label>';
+const fl=(lb,nm)=>'<label>'+lb+'<input name="'+nm+'"></label>';
+const isBad=(o,i)=>o[0]=='Ya'?false:(['Normal','Kencang','Bersih'].includes(o[0])?i==1:i==0);
+const rd=(n,o,rq)=>o.map((v,i)=>'<label class="pill'+(isBad(o,i)?' bd':'')+'"><input type="radio" name="'+n+'" value="'+v+'"'+rq+'><span>'+v+'</span></label>').join('');
+const grp=(t,b,k)=>'<div class="gh2 cl"><span class="ar">▾</span><span>'+t+'</span>'+(k?'<span class="cnt"></span>':'')+'</div><div class="gb cl">'+b+'</div>';
+function ckForm(c){let h='<div class="ckh"><span>Peralatan yang diperiksa</span><span>Kondisi Awal</span><span>Kondisi Akhir</span></div>';
+CK[c].forEach((g,gi)=>{let b='';g[1].forEach((it,ii)=>{const o=opt(it[1]),n='c.'+c+'.'+gi+'.'+ii,rq=g[2]==1?'':' data-req="'+esc(g[0]+' – '+it[0])+'"';
+b+='<div class="ckr"><div class="nm">'+String.fromCharCode(97+ii)+'. '+it[0]+'</div><div class="pls">'+rd(n+'.a',o,rq)+'</div>'+(g[2]==2?'<div></div>':'<div class="pls">'+rd(n+'.k',o,rq)+'</div>')+'</div>'});
+h+=grp((gi+1)+'. '+g[0]+(g[2]==1?' (jika ada)':'*'),b,1)});return h}
+function ujForm(c){let h='<div class="uh"><span>Titik Ukur</span><span>Hasil Sebelumnya<br>R · S · T</span><span>Kondisi Awal<br>R · S · T</span><span>Tindakan</span><span>Kondisi Akhir<br>R · S · T</span><span>Kesimpulan</span></div>';
+UJ[c].forEach((g,gi)=>{let b=g.a?'<pre class="acu"><b>Acuan:</b>\n'+esc(g.a)+'</pre>':'';
+g.i.forEach((it,ii)=>{const n='u.'+c+'.'+gi+'.'+ii+'.',t3=p=>(it.s?['']:['','','']).map((_,k)=>'<input name="'+n+p+k+'" inputmode="decimal" placeholder="'+(it.s?'nilai':'RST'[k])+'">').join('');
+b+='<div class="ur"><div class="un"><b>'+String.fromCharCode(97+ii)+'.</b> '+esc(it.l)+(it.c?'<small>'+esc(it.c)+'</small>':'')+'</div><div class="b pv"><b class="bl">Hasil Sebelumnya</b>'+t3('p')+'</div><div class="b"><b class="bl">Kondisi Awal</b>'+t3('a')+'</div><div class="b tn"><b class="bl">Tindakan</b><input name="'+n+'t"></div><div class="b"><b class="bl">Kondisi Akhir</b>'+t3('k')+'</div><div class="b ks"><b class="bl">Kesimpulan</b><input name="'+n+'s"></div></div>'});
+h+=grp((gi+1)+'. '+g.t+'*',b,1)});return h}
+const cvc=id=>'<td class="cv" data-cv="'+id+'"></td>';
+function ctInjForm(){let b='';['R','S','T'].forEach((f,fi)=>{b+='<div class="sc"><table class="uj2"><caption>Fasa '+f+'</caption><tr><th>Arus Uji</th><th>I Primer (A)</th><th>I Sek. Proteksi (A)</th><th>I Sek. Metering (A)</th><th>I Sek. Teori (A)</th><th>Ratio Ip/Is</th><th>Error (%)</th></tr>';
+[25,50,75,100].forEach((p,pi)=>{const k=fi*4+pi;b+='<tr><td>'+p+'% In</td>'+['ip','is','im'].map(x=>'<td><input name="m.ct.'+x+'.'+k+'" inputmode="decimal"></td>').join('')+cvc('te.'+k)+cvc('cr.'+k)+cvc('ce.'+k)+'</tr>'});b+='</table></div>'});
+return grp('INJEKSI PRIMER*',b)}
+function relayForm(){const hd=a=>'<tr>'+a.map(x=>'<th>'+x+'</th>').join('')+'</tr>',row=(l,t)=>'<tr><td class="l">'+l+'</td>'+t+'</tr>',rg=(n,f)=>Array.from({length:n},(_,k)=>f(k)).join(''),
+ii=n=>'<td><input name="m.r.'+n+'" inputmode="decimal"></td>',par=a=>'<div class="g" style="margin-bottom:8px">'+a.map(x=>'<label>'+x[1]+'<input name="m.r.'+x[0]+'" inputmode="decimal"></label>').join('')+'</div>',tb=x=>'<div class="sc"><table class="uj2">'+x+'</table></div>';
+return grp('I. ARUS PICK UP',tb(hd(['','OCR Fase R','OCR Fase S','OCR Fase T','GFR (N)'])+row('Arus Setting (Is) - A',rg(4,k=>ii('is.'+k)))+row('Arus Kerja (Ir) - A',rg(4,k=>ii('ir.'+k)))+row('Arus Kembali (Id) - A',rg(4,k=>ii('id.'+k)))+row('Reset Ratio (Kd) Id/Ir - %',rg(4,k=>cvc('kd.'+k))))+'<small>Standar reset ratio 95-98% (IEC 60255-151)</small>')+
+grp('II. KARAKTERISTIK WAKTU — OVER CURRENT RELAY (OCR)',par([['i1','I> (A Pri)'],['tms','TMS (kurva SI)'],['i2','I>> (A Pri)'],['t2','t>> (ms)'],['i3','I>>> (A Pri)'],['t3','t>>> (ms)']])+
+tb(hd(['Nominal Injeksi (x Is)','1.5 x','2 x','3 x','4 x','I>>','I>>>'])+row('Arus Injeksi (Primer)',rg(6,k=>cvc('ip.'+k)))+row('Arus Injeksi (Sekunder)',rg(6,k=>cvc('isec.'+k)))+row('Hitungan (ms)',rg(6,k=>cvc('ht.'+k)))+
+['RS','ST','TR'].map(p=>row(p[0]+'-'+p[1]+' Hasil Uji (ms)',rg(6,k=>ii('hu.'+p+'.'+k)))+row(p[0]+'-'+p[1]+' Error (%)',rg(6,k=>cvc('er.'+p+'.'+k)))).join('')))+
+grp('GROUND FAULT RELAY (GFR)',par([['ie','Ie> (A Pri)'],['tmsg','TMS (kurva SI)'],['ie2','Ie>> (A Pri)'],['tie2','tIe>> (ms)']])+
+tb(hd(['Nominal Injeksi (x Is)','1.5 x','2 x','3 x','4 x','Ie>>'])+row('Arus Injeksi (Primer)',rg(5,k=>cvc('gp.'+k)))+row('Arus Injeksi (Sekunder)',rg(5,k=>cvc('gs.'+k)))+row('Hitungan (ms)',rg(5,k=>cvc('gh.'+k)))+row('N Hasil Uji (ms)',rg(5,k=>ii('hg.'+k)))+row('N Error (%)',rg(5,k=>cvc('ge.'+k))))+'<small>Standar karakteristik waktu ±5% (IEC 60255-151)</small>')+
+grp('III. UJI FUNGSI PROTEKSI',tb(hd(['Indikator Fungsi','Status','Keterangan'])+['PMT','Indikasi Rele','Announciator / Horn'].map((x,k)=>row(x,'<td><select name="m.r.f.'+k+'.s"><option></option><option>Normal</option><option>Abnormal</option></select></td><td><input name="m.r.f.'+k+'.k"></td>')).join('')))}
+const photoBox=(c,k)=>'<h3>Foto Dokumentasi '+(k=='ck'?'Proses Pengecekan':'Hasil Uji')+' <b class="rq">*</b></h3><div class="pb" data-c="'+c+'" data-k="'+k+'"><label class="btn up"><input type="file" accept="image/*" multiple hidden>📷 Upload Foto Pekerjaan</label> <small>wajib, minimal 1 foto</small><div class="pl"></div></div>';
+const ex='<span class="ex"><button type="button" class="exb" data-m="1">Buka semua</button><button type="button" class="exb" data-m="0">Tutup semua</button></span>';
+const panel=c=>'<div class="pn" id="pn-'+c+'" hidden><details class="card sec" open><summary>'+TTL[c][0].replace('\n',' ')+ex+'</summary><div class="sb">'+ckForm(c)+photoBox(c,'ck')+'</div></details>'+
+'<details class="card sec" open><summary>'+TTL[c][1].replace('\n',' ')+ex+'</summary><div class="sb">'+(c=='relay'?relayForm():ujForm(c)+(c=='ct'?ctInjForm():''))+photoBox(c,'uji')+'<h3>Catatan** <small>(wajib jika ada kendala pengujian)</small></h3><textarea name="n.'+c+'" rows="3"></textarea></div></details></div>';
+/* ---- foto ---- */
+const P=[];
+const shrink=f=>new Promise(r=>{const i=new Image,u=URL.createObjectURL(f);i.onload=()=>{const s=Math.min(1,1280/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);r(c.toDataURL('image/jpeg',.8))};i.src=u});
+function rph(){$$('.pb').forEach(b=>{const l=$('.pl',b);l.innerHTML='';P.filter(p=>p.c==b.dataset.c&&p.k==b.dataset.k).forEach(p=>{const d=document.createElement('div');d.className='ph';
+d.innerHTML='<img src="'+p.data+'"><input placeholder="Keterangan foto *" value="'+esc(p.cap)+'"><label class="rd"><input type="checkbox"'+(p.anom?' checked':'')+'> Temuan / Anomali</label><button type="button">Hapus</button>';
+$('input',d).oninput=e=>p.cap=e.target.value;$('input[type=checkbox]',d).onchange=e=>p.anom=e.target.checked;$('button',d).onclick=()=>{P.splice(P.indexOf(p),1);rph();mark(1)};l.append(d)})})}
+document.addEventListener('change',async e=>{const t=e.target;if(t.type!='file')return;const b=t.closest('.pb');b.classList.remove('bad');for(const f of t.files)P.push({c:b.dataset.c,k:b.dataset.k,cap:'',anom:false,name:f.name,data:await shrink(f)});t.value='';rph()});
+/* ---- kumpulkan data ---- */
+function collect(){const c=sel(),i={};['lokasi','tgl','kubikel','tegnom','nodok','pel','tl','asman'].forEach(k=>i[k]=V('f.'+k));
+const D={info:i,sel:[c],cn:[CP[c]],comps:{},photos:P.filter(p=>p.c==c).map(p=>({comp:CP[p.c],kind:p.k,cap:p.cap.trim(),anom:p.anom,name:p.name,data:p.data}))};
+const h={},hl={};HFL(c).forEach(x=>{h[x[0]]=V('h.'+c+'.'+x[0]);hl[x[1]]=h[x[0]]});const ck=[],u=[];
+CK[c].forEach((g,gi)=>g[1].forEach((it,ii)=>ck.push({g:g[0],l:it[0],a:V('c.'+c+'.'+gi+'.'+ii+'.a'),k:V('c.'+c+'.'+gi+'.'+ii+'.k')})));
+(UJ[c]||[]).forEach((g,gi)=>g.i.forEach((it,ii)=>{const n='u.'+c+'.'+gi+'.'+ii+'.',g3=p=>[0,1,2].map(k=>V(n+p+k));u.push({gi,g:g.t,ac:g.a,l:it.l,c:it.c||'',s1:!!it.s,p:g3('p'),a:g3('a'),t:V(n+'t'),k:g3('k'),ks:V(n+'s'),first:ii==0,cnt:g.i.length})}));
+D.comps[c]={h,hl,ck,u,mx:mx(c),note:V('n.'+c)};return D}
+/* ---- grid (satu sumber untuk Excel, PDF, pratinjau) ---- */
+const zip=(a,b)=>Array.from({length:Math.max(a.length,b.length)},(_,k)=>[a[k]||'',b[k]||'']);
+function hdr(D,title,pg,n,L,meta){const i=D.info,w=n-4,r=[[{logo:1,cs:2,rs:3,v:''},{v:CO1,cs:n-2,b:1,h:18}],[{v:CO2,cs:n-2,b:1,h:18}],[{v:'',cs:n-2}]];
+r.push([{v:title,cs:w,rs:4,b:1,sz:13},{v:'No. Dokumen',cs:2,al:'l'},{v:': '+i.nodok,cs:2,al:'l'}],[{v:'Tanggal',cs:2,al:'l'},{v:': '+dfmt(i.tgl),cs:2,al:'l'}],[{v:'Halaman',cs:2,al:'l'},{v:': '+pg,cs:2,al:'l'}],[{v:'Revisi No.',cs:2,al:'l'},{v:': 00',cs:2,al:'l'}]);
+meta.forEach(m=>r.push(m.map((v,k)=>({v,cs:L[k],al:'l'}))));return r}
+const meta=(D,c)=>{const i=D.info,h=D.comps[c].h,s=HF[c],f=x=>x[1]+(x[2]?'':'*')+' : '+(h[x[0]]||'');
+const A=['Lokasi* : '+i.lokasi,'Tanggal Uji* : '+dfmt(i.tgl),(c=='relay'?'Feeder / Nama Kubikel* : ':'Nama Kubikel* : ')+i.kubikel,...(c=='relay'?[]:['Teg. Nom* : '+i.tegnom])],
+B=s.M.filter(x=>!x[2]||h[x[0]]).map(f),C=s.R.filter(x=>!x[2]||h[x[0]]).map(f),n=Math.max(A.length,B.length,C.length);
+return Array.from({length:n},(_,k)=>[A[k]||'',B[k]||'',C[k]||''])};
+function bottom(D,n,tl,note){const i=D.info,a=Math.floor(n/3),pel=i.pel.split('\n').filter(Boolean).map((x,k)=>(k+1)+'. '+x).join('\n'),dots='...............................';
+return[[{v:'Catatan** :\n'+note,cs:n,h:70,al:'l'}],[{v:'Pelaksana\n'+pel,cs:a,h:100,al:'l'},{v:'Mengetahui\n'+tl+'\n\n\n\n( '+(i.tl||dots)+' )',cs:a},{v:'Mengetahui\nAsman Pemeliharaan\n\n\n\n( '+(i.asman||dots)+' )',cs:n-2*a}],
+[{v:'*WAJIB DIISI, **WAJIB, JIKA ADA KENDALA PENGUJIAN BERI KETERANGAN PADA CATATAN',cs:n,al:'l',sz:9}]]}
+function ckRows(D,c){const d=D.comps[c],n=6,rows=hdr(D,TTL[c][0],'1',n,[2,2,2],meta(D,c)),H=(v,o={})=>({v,b:1,bg:1,...o});
+rows.push([H('No'),H('Peralatan yang diperiksa'),H('Kondisi Awal',{cs:2}),H('Kondisi Akhir',{cs:2})]);let k=0;
+CK[c].forEach((g,gi)=>{rows.push([{v:(gi+1)+'.',b:1},{v:g[0]+(g[2]==1?'':'*'),cs:5,b:1,al:'l'}]);
+g[1].forEach((it,ii)=>{const e=d.ck[k++],o=opt(it[1]),mk=(v,x)=>({v:(v==x?'☑ ':'☐ ')+x});
+rows.push([{v:String.fromCharCode(97+ii)+'.'},{v:it[0],al:'l'},mk(e.a,o[0]),mk(e.a,o[1]),...(g[2]==2?[{v:'',cs:2}]:[mk(e.k,o[0]),mk(e.k,o[1])])])})});
+return rows.concat(bottom(D,n,TLN[c],d.note))}
+const mxRows=(m,n)=>m.map(r=>r.sec?[{v:r.sec,cs:n,b:1,bg:1,al:'l'}]:r.n?[{v:r.n,cs:n,al:'l',sz:9}]:[{v:r.l,cs:2,al:'l',b:r.h},...r.v.map(v=>({v,b:r.h})),...(r.v.length<n-2?[{v:'',cs:n-2-r.v.length}]:[])]);
+function ujRows(D,c){const d=D.comps[c],n=14,rows=hdr(D,TTL[c][1],'2',n,[4,5,5],meta(D,c)),H=(v,o={})=>({v,b:1,bg:1,...o});
+rows.push([H('NO',{rs:2}),H('TITIK UKUR',{rs:2}),H('ACUAN',{rs:2}),H('HASIL SEBELUMNYA',{cs:3}),H('KONDISI AWAL',{cs:3}),H('TINDAKAN',{rs:2}),H('KONDISI AKHIR',{cs:3}),H('KESIMPULAN',{rs:2})],[...Array(9)].map((_,k)=>H('RST'[k%3])));
+d.u.forEach(u=>{const t3=x=>u.s1?[{v:x[0],cs:3}]:x.map(v=>({v})),ln=u.ac.split('\n').length,h=Math.max(u.c?26:16,Math.ceil(ln*11.5/u.cnt));
+rows.push([...(u.first?[{v:String(u.gi+1),rs:u.cnt}]:[]),{v:u.l+(u.c?'\n'+u.c:''),al:'l',h},...(u.first?[{v:u.ac,rs:u.cnt,al:'l',sz:9}]:[]),...t3(u.p),...t3(u.a),{v:u.t},...t3(u.k),{v:u.ks}])});
+return rows.concat(mxRows(d.mx,n),bottom(D,n,TLN[c],d.note))}
+function sheets(D){const o=[],i=D.info,NM={pmt:['G.1.A. Ceklist PMT LV','G.1.B. Hasil Uji PMT LV'],ct:['G.2.A. Ceklis CT LV','G.2.B. Hasil Uji CT LV'],vt:['G.3.A. Ceklis VT (BBVT)','G.3.B. Hasil Uji VT (BBVT)'],relay:['G.4.A. Ceklis Relay OCR','G.4.B. Relay OCR']};
+D.sel.forEach(c=>{const d=D.comps[c];o.push({name:NM[c][0],o:'p',w:[6,50,16,16,16,16],rows:ckRows(D,c)});
+o.push(c=='relay'?{name:NM[c][1],o:'l',w:[24,14,...Array(8).fill(11)],rows:hdr(D,TTL.relay[1],'2',10,[3,4,3],meta(D,c)).concat(mxRows(d.mx,10),bottom(D,10,TLN.relay,d.note))}:{name:NM[c][1],o:'l',w:[5,34,34,8,8,8,8,8,8,12,8,8,8,22],rows:ujRows(D,c)})});
+[[false,'I. Dokumentasi Pekerjaan','DOKUMENTASI PEKERJAAN'],[true,'J. Dokumentasi Temuan','DOKUMENTASI TEMUAN/ANOMALI']].forEach(([an,nm,tt])=>{const ph=D.photos.filter(p=>p.anom==an);if(!ph.length)return;
+const rows=hdr(D,tt,'-',6,[2,2,2],[['Lokasi* : '+i.lokasi,'Tanggal Uji* : '+dfmt(i.tgl),'Nama Kubikel* : '+i.kubikel]]),cp=p=>p?p.comp+' – '+(p.kind=='ck'?'Pengecekan':'Hasil Uji')+(p.cap?': '+p.cap:''):'';
+for(let k=0;k<ph.length;k+=2){const x=ph[k],y=ph[k+1];rows.push([{img:x.data,cs:3,h:160,v:''},y?{img:y.data,cs:3,v:''}:{v:'',cs:3}],[{v:cp(x),cs:3,h:34},{v:cp(y),cs:3}])}
+o.push({name:nm,o:'p',w:[15,15,15,15,15,15],rows})});return o}
+let LOGOP=LOGO;(()=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas');c.width=1032;c.height=307;c.getContext('2d').drawImage(i,0,0,1032,307);LOGOP=c.toDataURL('image/png')};i.src=LOGO})();
+function pageHTML(s){const px=s.w.reduce((x,y)=>x+y,0)*7;let h='<div class="pg" data-o="'+s.o+'" style="width:'+px+'px"><table style="width:'+px+'px"><colgroup>'+s.w.map(x=>'<col style="width:'+x*7+'px">').join('')+'</colgroup>';
+s.rows.forEach(r=>{const ht=Math.max(0,...r.map(c=>c.h||0));h+='<tr'+(ht?' style="height:'+ht*1.33+'px"':'')+'>'+r.map(c=>'<td'+(c.cs>1?' colspan="'+c.cs+'"':'')+(c.rs>1?' rowspan="'+c.rs+'"':'')+' class="'+(c.b?'b ':'')+(c.bg?'bg ':'')+(c.al=='l'?'l':'')+'"'+(c.sz?' style="font-size:'+c.sz+'px"':'')+'>'+(c.logo?'<img src="'+LOGOP+'" height="42">':c.img?'<img class="pi" src="'+c.img+'">':esc(c.v))+'</td>').join('')+'</tr>'});return h+'</table></div>'}
+/* ---- export ---- */
+const BD=Object.fromEntries(['top','left','bottom','right'].map(k=>[k,{style:'thin',color:{argb:'FF000000'}}]));
+async function xlsx(D){const wb=new ExcelJS.Workbook(),lg=wb.addImage({base64:LOGOP.split(',')[1],extension:'png'});
+for(const s of sheets(D)){const ws=wb.addWorksheet(s.name.slice(0,31),{pageSetup:{paperSize:9,orientation:s.o=='l'?'landscape':'portrait',fitToPage:true,fitToWidth:1,fitToHeight:0,margins:{left:.3,right:.3,top:.4,bottom:.4,header:.2,footer:.2}},views:[{showGridLines:false}]});
+s.w.forEach((x,k)=>ws.getColumn(k+1).width=x);const occ={};
+s.rows.forEach((r,ri)=>{let ci=1;const ht=Math.max(0,...r.map(c=>c.h||0));if(ht)ws.getRow(ri+1).height=ht;
+r.forEach(c=>{while(occ[ri+'_'+ci])ci++;const cs=c.cs||1,rs=c.rs||1;for(let y=0;y<rs;y++)for(let x=0;x<cs;x++)occ[(ri+y)+'_'+(ci+x)]=1;
+const t=ws.getCell(ri+1,ci);t.border=BD;
+if(!c.logo&&!c.img){const v=c.v===undefined?'':c.v;t.value=/^-?\d+([.,]\d+)?$/.test(String(v).trim())?parseFloat(String(v).replace(',','.')):v}
+t.font={name:'Arial',size:c.sz?c.sz-3:9,bold:!!c.b};t.alignment={wrapText:true,vertical:'middle',horizontal:c.al=='l'?'left':'center'};
+if(c.bg)t.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFE8EEF3'}};
+if(cs>1||rs>1)ws.mergeCells(ri+1,ci,ri+rs,ci+cs-1);
+if(c.logo)ws.addImage(lg,{tl:{col:.1,row:.15},ext:{width:150,height:45}});
+if(c.img)ws.addImage(wb.addImage({base64:c.img.split(',')[1],extension:'jpeg'}),{tl:{col:ci-1+.05,row:ri+.05},ext:{width:290,height:205}});
+ci+=cs})})}
+return wb.xlsx.writeBuffer()}
+async function pdf(D){const host=$('#off');host.innerHTML=sheets(D).map(pageHTML).join('');const {jsPDF}=window.jspdf;let doc=null;
+for(const el of $$('.pg',host)){const l=el.dataset.o=='l',cv=await html2canvas(el,{scale:2,backgroundColor:'#fff'}),m=8,W=(l?297:210)-2*m,H=(l?210:297)-2*m,k=W/cv.width,ch=Math.floor(H/k);
+for(let y=0,f=1;y<cv.height;y+=ch){if(!doc)doc=new jsPDF({orientation:l?'l':'p',unit:'mm',format:'a4'});else doc.addPage('a4',l?'l':'p');
+const hh=Math.min(ch,cv.height-y),sl=document.createElement('canvas');sl.width=cv.width;sl.height=hh;sl.getContext('2d').drawImage(cv,0,y,cv.width,hh,0,0,cv.width,hh);doc.addImage(sl.toDataURL('image/jpeg',.92),'JPEG',m,m,W,hh*k)}}
+host.innerHTML='';return doc.output('blob')}
+const dl=(data,name,type)=>{const x=document.createElement('a');x.href=URL.createObjectURL(new Blob([data],{type}));x.download=name;x.click();setTimeout(()=>URL.revokeObjectURL(x.href),4e3)};
+const fn=(D,x)=>'HAR_KUBIKEL_'+D.info.kubikel.replace(/[^\w-]+/g,'_')+'_'+D.info.tgl+'.'+x;
+let tt;function toast(m,s){const t=$('#toast');t.textContent=m;t.style.display=m?'block':'none';clearTimeout(tt);if(!s)tt=setTimeout(()=>t.style.display='none',4500)}
+async function save(D){const u=LS('api');if(!u){$('#dlg').showModal();return toast('Isi URL Web App Apps Script dulu.')}
+toast('Mengunggah data & foto…',1);const j=await (await fetch(u,{method:'POST',body:JSON.stringify(D)})).json();if(!j.ok)throw new Error(j.error);saved=true;dirty=false;sync();toast('Tersimpan ✔ '+j.rows+' baris, '+j.foto+' foto. ID: '+j.id)}
+function reveal(e){const g=e.closest('.gb');if(g&&g.classList.contains('cl')){g.classList.remove('cl');g.previousElementSibling.classList.remove('cl')}const d=e.closest('details');if(d)d.open=true}
+function validate(){$$('.bad').forEach(e=>e.classList.remove('bad'));const c=sel();if(!c){toast('Pilih komponen yang diperiksa dulu.');return false}
+const miss=[],seen={};
+$$('[data-req]').filter(e=>!e.closest('[hidden]')).forEach(e=>{const ok=e.type=='radio'?$$('[name="'+e.name+'"]').some(x=>x.checked):e.value.trim();if(ok||seen[e.name])return;seen[e.name]=1;const t=e.type=='radio'?e.closest('.ckr'):e;t.classList.add('bad');miss.push({t,m:e.dataset.req})});
+['ck','uji'].forEach(k=>{if(!P.some(p=>p.c==c&&p.k==k)){const b=$('.pb[data-c="'+c+'"][data-k="'+k+'"]');b.classList.add('bad');miss.push({t:b,m:'Upload foto '+(k=='ck'?'pengecekan':'hasil uji')})}});
+$$('.pb[data-c="'+c+'"] .ph input:not([type=checkbox])').filter(x=>!x.value.trim()).forEach(x=>{x.classList.add('bad');miss.push({t:x,m:'Keterangan foto'})});
+if(miss.length){reveal(miss[0].t);miss[0].t.scrollIntoView({block:'center'});toast(miss.length+' isian wajib belum lengkap — pertama: '+miss[0].m);return false}return true}
+async function act(k){if(k!='s'&&!saved)return toast('Simpan data dulu sebelum Export / Pratinjau.');if(!validate())return;const D=collect();try{
+if(k=='x'){toast('Membuat Excel…',1);dl(await xlsx(D),fn(D,'xlsx'),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');toast('Excel diunduh.')}
+if(k=='p'){toast('Membuat PDF…',1);dl(await pdf(D),fn(D,'pdf'),'application/pdf');toast('PDF diunduh.')}
+if(k=='s')await save(D);
+if(k=='v'){$('#pv').innerHTML=sheets(D).map(pageHTML).join('');$('#prevc').hidden=false;$('#prevc').scrollIntoView();toast('')}}catch(e){console.error(e);toast('Gagal: '+(e.message||e))}}
+/* hasil sebelumnya otomatis dari Google Sheet (kubikel + lokasi + komponen yang sama) */
+let pvT;function prevLoad(){clearTimeout(pvT);pvT=setTimeout(async()=>{const c=sel(),u=LS('api'),s=$('#pvs');$$('input.auto').forEach(e=>{e.value='';e.classList.remove('auto')});
+if(!c||!UJ[c]){s.textContent='';return}if(!u){s.textContent='Hubungkan Google (⚙) agar Hasil Sebelumnya terisi otomatis.';return}
+if(!V('f.lokasi')||!V('f.kubikel')){s.textContent='Isi Lokasi & Nama Kubikel — Hasil Sebelumnya dimuat otomatis.';return}
+s.textContent='Memuat hasil sebelumnya…';try{const j=await (await fetch(u+'?action=prev&lokasi='+encodeURIComponent(V('f.lokasi'))+'&kubikel='+encodeURIComponent(V('f.kubikel'))+'&comp='+encodeURIComponent(CP[c]))).json();
+if(!j.ok||!j.rows){s.textContent='Belum ada data pemeriksaan sebelumnya untuk kubikel ini.';return}
+let n=0;UJ[c].forEach((g,gi)=>g.i.forEach((it,ii)=>{const r=j.rows[g.t+'|'+it.l];if(!r)return;n++;[0,1,2].forEach(k=>{const e=$('[name="u.'+c+'.'+gi+'.'+ii+'.p'+k+'"]');if(e&&r[k]){e.value=r[k];e.classList.add('auto')}})}));
+s.textContent='Hasil Sebelumnya dimuat dari pemeriksaan '+j.tgl+' ('+n+' titik ukur).'}catch(e){s.textContent='Gagal memuat hasil sebelumnya.'}},700)}
+function prog(){$$('.gh2').forEach(h=>{const cn=$('.cnt',h);if(!cn)return;const b=h.nextElementSibling;let d=0,t=0;
+if($('.ckr',b)){const s={};$$('input[type=radio]',b).forEach(r=>s[r.name]=s[r.name]||r.checked);t=Object.keys(s).length;d=Object.values(s).filter(Boolean).length}
+else{$$('.ur',b).forEach(r=>{t++;if($('input[name$=".k0"]',r).value.trim())d++})}
+cn.textContent=d+'/'+t;cn.classList.toggle('full',t>0&&d==t)})}
+const sum=()=>{$('#sumt').textContent=[V('f.lokasi'),V('f.kubikel'),dfmt(V('f.tgl'))].filter(Boolean).join(' · ')};
+let saved=false,dirty=false;
+const sync=()=>{$$('.bar [data-a="x"],.bar [data-a="p"],.bar [data-a="v"]').forEach(b=>b.disabled=!saved);$('#cov').hidden=!(dirty&&sel());$('#bh').textContent=saved?'':'Klik Simpan Data dulu untuk mengaktifkan Export & Pratinjau.'};
+const mark=d=>{if(d){saved=false;dirty=!!sel()}sync()};
+/* ---- init ---- */
+$('#lg').src=LOGO;
+$('#comp').innerHTML='<option value="">— Pilih komponen yang diperiksa —</option>'+Object.keys(CP).map(c=>'<option value="'+c+'">'+CP[c]+'</option>').join('');
+$('#insp').innerHTML='<h2 class="ih">Data Inspeksi</h2><div id="sum"><b>Data Inspeksi</b><span id="sumt"></span><em>Ubah ▾</em></div><div class="insp-body"><div class="ig"><div class="col">'+fr('Lokasi','f.lokasi')+fr('Tanggal Uji','f.tgl',{t:'date'})+fr('Nama Kubikel','f.kubikel')+'<span id="tgn">'+fr('Teg. Nom','f.tegnom',{v:'20 kV'})+'</span></div>'+
+Object.keys(CP).map(c=>'<div class="hf" data-c="'+c+'" hidden><div class="col">'+HF[c].M.map(x=>fr(x[1],'h.'+c+'.'+x[0],{opt:x[2]})).join('')+'</div><div class="col">'+HF[c].R.map(x=>fr(x[1],'h.'+c+'.'+x[0],{opt:x[2]})).join('')+'</div></div>').join('')+'</div><small id="pvs"></small></div>';
+$('#panels').innerHTML=Object.keys(CP).map(panel).join('');
+$('#mg').innerHTML=fl('No. Dokumen','f.nodok')+fl('TL (nama)','f.tl')+fl('Asman Pemeliharaan (nama)','f.asman')+'<label>Pelaksana (satu nama per baris)<textarea name="f.pel" rows="3"></textarea></label>';
+$('#comp').onchange=()=>{saved=false;dirty=false;const c=sel();$('#insp').hidden=!c;$('#more').hidden=!c;$$('.pn').forEach(p=>p.hidden=p.id!='pn-'+c);$$('.hf').forEach(p=>p.hidden=p.dataset.c!=c);$('#tgn').hidden=c=='relay';sum();recalc();prog();prevLoad();sync()};
+document.addEventListener('input',e=>{const t=e.target;if(!t.closest('dialog'))mark(1);const m=/^u\.(\w+)\.(\d+)\.(\d+)\.(\w)\d?$/.exec(t.name||'');t.classList.remove('bad');if(t.classList.contains('auto'))t.classList.remove('auto');
+if(m){const f=m[4];if(f=='s'){if(t.value)t.dataset.m=1;else delete t.dataset.m}else if('pak'.includes(f)){const ks=$('[name="u.'+m[1]+'.'+m[2]+'.'+m[3]+'.s"]');if(ks&&!ks.dataset.m)ks.value=auto(m[1],m[2],m[3])}}
+if(/^f\.(lokasi|kubikel)$/.test(t.name))prevLoad();sum();prog();recalc()});
+document.addEventListener('change',e=>{if(e.target.id!='comp'&&!e.target.closest('dialog'))mark(1);if(e.target.type=='radio'){e.target.closest('.ckr')?.classList.remove('bad');prog()}});
+document.addEventListener('click',e=>{const h=e.target.closest('.gh2');if(h){h.classList.toggle('cl');h.nextElementSibling.classList.toggle('cl');return}
+const x=e.target.closest('.exb');if(x){e.preventDefault();$$('.gh2',x.closest('details')).forEach(g=>{g.classList.toggle('cl',x.dataset.m=='0');g.nextElementSibling.classList.toggle('cl',x.dataset.m=='0')})}});
+/* sticky + animasi sederhana */
+const st=$('#stick'),setStk=()=>document.documentElement.style.setProperty('--stk',st.offsetHeight+'px');new ResizeObserver(setStk).observe(st);
+addEventListener('scroll',()=>{const y=scrollY;st.classList.toggle('stuck',y>6);if(sel()&&y>220&&!st.classList.contains('mini')){st.classList.add('mini');st.classList.remove('open')}else if(y<40)st.classList.remove('mini','open')},{passive:true});
+$('#insp').addEventListener('click',e=>{if(st.classList.contains('mini')&&e.target.closest('#sum'))st.classList.toggle('open')});
+$('#cov').onclick=()=>$('#warn').showModal();
+$('#comp').addEventListener('keydown',e=>{if(dirty&&sel()&&e.key!='Tab'){e.preventDefault();$('#warn').showModal()}});
+$('#wcn').onclick=()=>$('#warn').close();
+$('#wsv').onclick=async()=>{$('#warn').close();await act('s')};
+$('#wgo').onclick=()=>{$('#warn').close();dirty=false;sync();try{$('#comp').showPicker()}catch(e){$('#comp').focus()}};
+sync();
+$$('.bar button').forEach(b=>b.onclick=()=>act(b.dataset.a));
+$('#cfg').onclick=()=>{$('#api').value=LS('api');$('#dlg').showModal()};$('#cl').onclick=()=>$('#dlg').close();
+$('#sv').onclick=()=>{LS('api',$('#api').value.trim());$('#dlg').close();toast('URL tersimpan.');prevLoad()};
+$('#ts').onclick=async()=>{try{const j=await (await fetch($('#api').value.trim())).json();toast(j.ok?'Koneksi OK ✔':'Respon tidak dikenal')}catch(e){toast('Gagal terhubung — cek URL & akses "Anyone"')}};
+</script></body></html>
